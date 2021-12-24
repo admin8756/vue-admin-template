@@ -1,9 +1,30 @@
+<!--
+ * @name: 面包屑导航
+ * @Autor: 李俊峰
+ * @Date: 2021-12-15 18:15:33
+ * @LastEditors: 李俊峰
+ * @LastEditTime: 2021-12-21 14:26:05
+ * @FilePath: \src\components\Breadcrumb\index.vue
+ * @Description:面包屑导航
+-->
 <template>
-  <el-breadcrumb class="app-breadcrumb" separator="/">
+  <el-breadcrumb
+    class="app-breadcrumb"
+    separator="/"
+  >
     <transition-group name="breadcrumb">
-      <el-breadcrumb-item v-for="(item,index) in levelList" :key="item.path">
-        <span v-if="item.redirect==='noRedirect'||index==levelList.length-1" class="no-redirect">{{ item.meta.title }}</span>
-        <a v-else @click.prevent="handleLink(item)">{{ item.meta.title }}</a>
+      <el-breadcrumb-item
+        v-for="(item, index) in levelList"
+        :key="item.path"
+      >
+        <span
+          v-if="item.redirect === 'noRedirect' || index == levelList.length - 1"
+          class="no-redirect"
+        >{{ item.meta.title }}</span>
+        <a
+          v-else
+          @click.prevent="handleLink(item)"
+        >{{ item.meta.title }}</a>
       </el-breadcrumb-item>
     </transition-group>
   </el-breadcrumb>
@@ -15,7 +36,7 @@ import pathToRegexp from 'path-to-regexp'
 export default {
   data() {
     return {
-      levelList: null
+      levelList: undefined
     }
   },
   watch: {
@@ -29,21 +50,24 @@ export default {
   methods: {
     getBreadcrumb() {
       // only show routes with meta.title
-      let matched = this.$route.matched.filter(item => item.meta && item.meta.title)
+      let matched = this.$route.matched.filter(
+        (item) => item.meta && item.meta.title
+      )
       const first = matched[0]
-
-      if (!this.isDashboard(first)) {
-        matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
+      if (!this.isHomePage(first)) {
+        matched = [{ path: '/home' }].concat(matched)
       }
 
-      this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+      this.levelList = matched.filter(
+        (item) => item.meta && item.meta.title && item.meta.breadcrumb !== false
+      )
     },
-    isDashboard(route) {
+    isHomePage(route) {
       const name = route && route.name
       if (!name) {
         return false
       }
-      return name.trim().toLocaleLowerCase() === 'Dashboard'.toLocaleLowerCase()
+      return name.trim().toLocaleLowerCase() === 'Home'.toLocaleLowerCase()
     },
     pathCompile(path) {
       // To solve this problem https://github.com/PanJiaChen/vue-element-admin/issues/561

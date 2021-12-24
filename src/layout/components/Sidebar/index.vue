@@ -1,18 +1,33 @@
+<!--
+ * @Autor: 李俊峰
+ * @Version: 3.0
+ * @LastEditors: 李俊峰
+-->
 <template>
-  <div :class="{'has-logo':showLogo}">
+  <div :class="{ 'has-logo': showLogo }">
     <logo v-if="showLogo" :collapse="isCollapse" />
-    <el-scrollbar wrap-class="scrollbar-wrapper">
+    <el-scrollbar
+      wrap-class="scrollbar-wrapper"
+      @mouseenter.native="mouseMovementEvent(true)"
+      @mouseleave.native="mouseMovementEvent(false)"
+    >
       <el-menu
+        style="padding-bottom: 120px"
         :default-active="activeMenu"
         :collapse="isCollapse"
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
         :unique-opened="false"
         :active-text-color="variables.menuActiveText"
-        :collapse-transition="false"
+        :collapse-transition="true"
         mode="vertical"
       >
-        <sidebar-item v-for="route in routes" :key="route.path" :item="route" :base-path="route.path" />
+        <sidebar-item
+          v-for="(route, index) in routes"
+          :key="index"
+          :item="route"
+          :base-path="route.path"
+        />
       </el-menu>
     </el-scrollbar>
   </div>
@@ -23,13 +38,12 @@ import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/variables.scss'
+import { debounce } from '@/utils/utils'
 
 export default {
   components: { SidebarItem, Logo },
   computed: {
-    ...mapGetters([
-      'sidebar'
-    ]),
+    ...mapGetters(['sidebar']),
     routes() {
       return this.$router.options.routes
     },
@@ -50,6 +64,16 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    }
+  },
+
+  methods: {
+    /* 鼠标移动 */
+    async mouseMovementEvent(type) {
+      debounce(this.setType(type), 1000)
+    },
+    setType(type) {
+      this.sidebar.opened = type
     }
   }
 }

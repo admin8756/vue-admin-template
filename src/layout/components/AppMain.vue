@@ -1,3 +1,12 @@
+<!--
+ * @name: 主要页面
+ * @Autor: 李俊峰
+ * @Date: 2021-12-15 18:15:33
+ * @LastEditors: 李俊峰
+ * @LastEditTime: 2021-12-21 14:26:53
+ * @FilePath: \src\layout\components\AppMain.vue
+ * @Description: 主页
+-->
 <template>
   <section class="app-main">
     <transition name="fade-transform" mode="out-in">
@@ -25,9 +34,9 @@ export default {
   position: relative;
   overflow: hidden;
 }
-.fixed-header+.app-main {
+/* .fixed-header+.app-main {
   padding-top: 50px;
-}
+} */
 </style>
 
 <style lang="scss">
