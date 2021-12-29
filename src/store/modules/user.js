@@ -1,3 +1,12 @@
+/*
+ * @name: 用户信息
+ * @Autor: 李俊峰
+ * @Date: 2021-12-15 18:15:33
+ * @LastEditors: 李俊峰
+ * @LastEditTime: 2021-12-29 15:45:51
+ * @FilePath: \src\store\modules\user.js
+ * @Description: 用户信息状态管理器
+ */
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
@@ -6,7 +15,12 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    userType: '',
+    routerList: [],
+    userAuthorizationDate: '',
+    userdeadLineDate: ''
+
   }
 }
 
@@ -19,11 +33,23 @@ const mutations = {
   SET_TOKEN: (state, token) => {
     state.token = token
   },
-  SET_NAME: (state, name) => {
-    state.name = name
+  SET_NAME: (state, e) => {
+    state.userName = e
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_FULLNAME: (state, e) => {
+    state.fullName = e
+  },
+  SET_USER_TYPE: (state, e) => {
+    state.userType = e
+  },
+  SET_ROUTER_LIST: (state, e) => {
+    state.routerList = e
+  },
+  SET_USER_AUTHORIZATION_DATE: (state, e) => {
+    state.userAuthorizationDate = e
+  },
+  SET_USERDEAD_LINE_DATE: (state, e) => {
+    state.userdeadLineDate = e
   }
 }
 
@@ -32,10 +58,10 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ loginName: username.trim(), loginPwd: password }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        setToken(data.token)
+        commit('SET_TOKEN', data.user_token)
+        setToken(data.user_token)
         resolve()
       }).catch(error => {
         reject(error)
@@ -46,17 +72,24 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
+      getInfo().then(response => {
         const { data } = response
-
         if (!data) {
-          return reject('Verification failed, please Login again.')
+          return reject('验证失败，请稍后重试')
         }
-
-        const { name, avatar } = data
-
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
+        const {
+          fullName,
+          userName,
+          userType,
+          crtTime,
+          deadLine
+        } = data
+        commit('SET_ROUTER_LIST', response.other.list)
+        commit('SET_FULLNAME', fullName)
+        commit('SET_NAME', userName)
+        commit('SET_USER_TYPE', Number(userType))
+        commit('SET_USER_AUTHORIZATION_DATE', crtTime)
+        commit('SET_USERDEAD_LINE_DATE', deadLine)
         resolve(data)
       }).catch(error => {
         reject(error)

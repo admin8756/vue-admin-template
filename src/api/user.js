@@ -1,24 +1,29 @@
+/*
+ * @Autor: 李俊峰
+ * @Version: 3.0
+ * @LastEditors: 李俊峰
+ */
 import request from '@/utils/request'
-
 export function login(data) {
   return request({
-    url: '/vue-admin-template/user/login',
+    url: '/login/token',
     method: 'post',
     data
   })
 }
 
-export function getInfo(token) {
+export function getInfo() {
   return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
+    url: '/user/info',
+    method: 'post',
+    data: {}
   })
 }
 
 export function logout() {
   return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
+    url: '/login/logout',
+    method: 'post',
+    data: {}
   })
 }
